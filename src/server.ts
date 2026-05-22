@@ -5,14 +5,13 @@ import prisma from "./app/utils/prisma.js";
 const port = config.port;
 
 async function main() {
-  try {
-    await prisma.$connect();
+ try {
+    await prisma.$queryRaw`SELECT 1`; 
     console.log("Database connected successfully");
 
     const server = app.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });
-
     const shutdown = async () => {
       server.close(async () => {
         await prisma.$disconnect();
