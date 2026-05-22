@@ -6,17 +6,27 @@ const port = config.port;
 
 async function main() {
   try {
-    // ১. প্রিজমা দিয়ে পোস্টগ্রেস কানেক্ট
     await prisma.$connect();
-    console.log("✅ Database connected successfully");
+    console.log("Database connected successfully");
 
-    // ৩. সার্ভার স্টার্ট
-    app.listen(port, () => {
-      console.log(`🚀 Server running on port ${port}`);
+    const server = app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
     });
+
+    const shutdown = async () => {
+      server.close(async () => {
+        await prisma.$disconnect();
+        process.exit(0);
+      });
+    };
+
+    process.on("SIGINT", shutdown);
+    process.on("SIGTERM", shutdown);
   } catch (error) {
-    console.log("❌ Database connection failed");
-    console.log(error);
+    console.error("Database connection failed");
+    console.error(error);
+    await prisma.$disconnect();
+    process.exit(1);
   }
 }
 
