@@ -48,6 +48,34 @@ const loginUserFromDB = async (payload: IUserLoginInput) => {
   return userData;
 };
 
+// update-user profile 
+const updateProfileInDB = async (userId: string, updateData: Record<string, any>) => {
+  if (updateData.password) delete updateData.password;
+  if (updateData.role) delete updateData.role;
+  if (updateData.age) {
+    updateData.age = Number(updateData.age);
+  }
+  const result = await prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      photoUrl: true,   
+      age: true,        
+      phone: true,      
+      address: true,   
+      emailVerified: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  return result;
+};
+
 export const UserServices = {
   createUserIntoDB,
   loginUserFromDB,
