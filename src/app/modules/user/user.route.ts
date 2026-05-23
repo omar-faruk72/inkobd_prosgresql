@@ -5,5 +5,6 @@ const router = express.Router();
 
 // POST -> /api/v1/users/signup
 router.post("/signup", UserControllers.registerUser);
-
+// POST -> /api/v1/users/login
+router.post("/login", UserControllers.loginUser);
 export const UserRoutes = router;
